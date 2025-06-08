@@ -12,7 +12,7 @@ from visualizations import (
 )
 
 # Set page configuration
-st.set_page_config(layout="wide", page_title="Dashboard Analisis Penjualan Adidas")
+st.set_page_config(layout="wide", page_title="Adidas Sales Analysis Dashboard")
 
 # Load CSS
 with open("styles.css") as f:
@@ -24,25 +24,34 @@ def main():
     
     # Load data
     df = load_data(engine)
+    print("Data source:", "Database" if engine else "Sample")
+    print("DataFrame shape:", df.shape)
+    print("Columns:", df.columns.tolist())
+    print("price_per_unit sample:", df['price_per_unit'].head().to_list())
+    print("price_per_unit dtype:", df['price_per_unit'].dtype)
+    print("price_per_unit non-null count:", df['price_per_unit'].notnull().sum())
+    print("price_per_unit zero count:", (df['price_per_unit'] == 0).sum())
+    print("price_per_mean (raw):", df['price_per_unit'].mean())
+    
     if df.empty:
-        st.warning("Tidak ada data yang dimuat. Periksa database atau query.")
+        st.warning("No data loaded. Check database or query.")
         return
     
-    # Filter periode
+    # Filter period
     period_options = {
-        "Jan 2020 - Des 2021": (pd.to_datetime("2020-01-01"), pd.to_datetime("2021-12-31")),
+        "Jan 2020 - Dec 2021": (pd.to_datetime("2020-01-01"), pd.to_datetime("2021-12-31")),
         "2021 Full Year": (pd.to_datetime("2021-01-01"), pd.to_datetime("2021-12-31")),
         "Q1 2021": (pd.to_datetime("2021-01-01"), pd.to_datetime("2021-03-31")),
         "Last 6 Months": (df['invoice_date'].max() - pd.Timedelta(days=180), df['invoice_date'].max())
     }
-    selected_period = st.selectbox("Pilih Periode", list(period_options.keys()), key="period_filter")
+    selected_period = st.selectbox("Select Period", list(period_options.keys()), key="period_filter")
     start_date, end_date = period_options[selected_period]
     filtered_df = filter_data(df, start_date, end_date)
     
     # Header
     st.markdown(f"""
         <div class="header">
-            <h1>Dashboard Analisis Penjualan Adidas</h1>
+            <h1>Adidas Sales Analysis Dashboard</h1>
             <div class="controls">
                 <select class="filter-dropdown">
                     <option>{selected_period}</option>
@@ -52,54 +61,54 @@ def main():
     """, unsafe_allow_html=True)
     
     # Section 1: Summary Metrics
-    st.markdown('<div class="section"><div class="section-title">Ringkasan Metrik</div><div class="kpi-grid">', unsafe_allow_html=True)
+    st.markdown('<div class="section"><div class="section-title">Summary Metrics</div><div class="kpi-grid">', unsafe_allow_html=True)
     kpis = calculate_kpis(filtered_df, df)
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-label">Total Penjualan</div>
-                <div class="kpi-value">Rp {kpis['total_sales']:,.1f} M</div>
-                <div class="kpi-label">Periode: {selected_period}</div>
+                <div class="kpi-label">Total Sales</div>
+                <div class="kpi-value">${kpis['total_sales']:,.2f} M</div>
+                <div class="kpi-label">Period: {selected_period}</div>
             </div>
         """, unsafe_allow_html=True)
-        sales_alert = generate_performance_alert(kpis['total_sales'], kpis['historical_avg_sales'], "Penjualan")
+        sales_alert = generate_performance_alert(kpis['total_sales'], kpis['historical_avg_sales'], "Sales")
         alert_class = "alert-success" if "🟢" in sales_alert else "alert-danger" if "🔴" in sales_alert else "alert-warning"
         st.markdown(f'<div class="{alert_class}">{sales_alert}</div>', unsafe_allow_html=True)
     
     with col2:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-label">Total Keuntungan</div>
-                <div class="kpi-value">Rp {kpis['total_profit']:,.1f} M</div>
-                <div class="kpi-label">Periode: {selected_period}</div>
+                <div class="kpi-label">Total Profit</div>
+                <div class="kpi-value">${kpis['total_profit']:,.2f} M</div>
+                <div class="kpi-label">Period: {selected_period}</div>
             </div>
         """, unsafe_allow_html=True)
-        profit_alert = generate_performance_alert(kpis['total_profit'], kpis['historical_avg_profit'], "Keuntungan")
+        profit_alert = generate_performance_alert(kpis['total_profit'], kpis['historical_avg_profit'], "Profit")
         alert_class = "alert-success" if "🟢" in profit_alert else "alert-danger" if "🔴" in profit_alert else "alert-warning"
         st.markdown(f'<div class="{alert_class}">{profit_alert}</div>', unsafe_allow_html=True)
     
     with col3:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-label">Unit Terjual</div>
-                <div class="kpi-value">{kpis['total_units']:,.2f} Juta</div>
-                <div class="kpi-label">Periode: {selected_period}</div>
+                <div class="kpi-label">Units Sold</div>
+                <div class="kpi-value">{kpis['total_units']:,.2f} Million</div>
+                <div class="kpi-label">Period: {selected_period}</div>
             </div>
         """, unsafe_allow_html=True)
     
     with col4:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-label">Harga Rata-rata</div>
-                <div class="kpi-value">Rp {kpis['avg_price']:,.0f}</div>
-                <div class="kpi-label">Periode: {selected_period}</div>
+                <div class="kpi-label">Average Price</div>
+                <div class="kpi-value">${kpis['avg_price']:,.4f}</div>
+                <div class="kpi-label">Period: {selected_period}</div>
             </div>
         """, unsafe_allow_html=True)
     st.markdown('</div></div>', unsafe_allow_html=True)
     
     # Section 2: Sales Trends
-    st.markdown('<div class="section"><div class="section-title">Tren Penjualan</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section"><div class="section-title">Sales Trends</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         monthly_data = filtered_df.groupby('month').agg({'total_sales': 'sum', 'operating_profit': 'sum'}).reset_index()
@@ -117,7 +126,7 @@ def main():
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Section 3: Retailer Insights
-    st.markdown('<div class="section"><div class="section-title">Wawasan Pengecer</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section"><div class="section-title">Retailer Insights</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         plot_top_retailers(filtered_df)
@@ -132,7 +141,7 @@ def main():
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Section 4: Product & Gender Analysis
-    st.markdown('<div class="section"><div class="section-title">Analisis Produk & Gender</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section"><div class="section-title">Product & Gender Analysis</div>', unsafe_allow_html=True)
     col1, col2, col3 = st.columns(3)
     with col1:
         plot_product_category_performance(filtered_df)
@@ -151,7 +160,7 @@ def main():
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Section 5: Geographic Insights
-    st.markdown('<div class="section"><div class="section-title">Wawasan Geografis</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section"><div class="section-title">Geographic Insights</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         plot_regional_sales(filtered_df)
@@ -166,7 +175,7 @@ def main():
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Section 6: Sales Method Insights
-    st.markdown('<div class="section"><div class="section-title">Wawasan Metode Penjualan</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section"><div class="section-title">Sales Method Insights</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         plot_sales_method_distribution(filtered_df)
@@ -175,13 +184,13 @@ def main():
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Narrative Analysis
-    st.markdown('<div class="section"><div class="section-title">Wawasan Pasar</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section"><div class="section-title">Market Insights</div>', unsafe_allow_html=True)
     st.markdown("""
-        **Observasi Utama:**
-        1. **Tren Penjualan**: Prediksi menggunakan Random Forest menunjukkan akurasi lebih baik (MAE lebih rendah) dibandingkan Linear Regression.
-        2. **Wawasan Pengecer**: Fokus pada pengecer dengan marjin rendah untuk strategi peningkatan.
-        3. **Analisis Produk & Gender**: Sesuaikan pemasaran berdasarkan preferensi gender.
-        4. **Wawasan Geografis**: Ekspansi ke wilayah dengan penjualan rendah untuk pertumbuhan.
+        **Key Observations:**
+        1. **Sales Trends**: Predictions using Random Forest show better accuracy (lower MAE) compared to Linear Regression.
+        2. **Retailer Insights**: Focus on retailers with low margins for improvement strategies.
+        3. **Product & Gender Analysis**: Tailor marketing based on gender preferences.
+        4. **Geographic Insights**: Expand into regions with low sales for growth opportunities.
     """, unsafe_allow_html=True)
 
 if __name__ == "__main__":

@@ -6,11 +6,11 @@ import streamlit as st
 def connect_to_database():
     try:
         engine = create_engine('postgresql+psycopg2://postgres:090203@localhost:5433/DW_Adidas')
-        st.success("✅ Berhasil tersambung ke database DW_Adidas!")
+        st.success("✅ Connected to DW_Adidas database!")
         return engine
     except Exception as e:
-        st.error(f"❌ Gagal tersambung ke database: {str(e)}")
-        st.warning("🔧 Menggunakan data sample untuk demo...")
+        st.error(f"❌ Database connection failed: {str(e)}")
+        st.warning("🔧 Using sample data...")
         return None
 
 @st.cache_data
@@ -19,7 +19,8 @@ def load_data(_engine=None):
         query = """
         SELECT 
             fs.sales_id, dr.retailer_name, dd.year, dd.month, dd.quarter, dd.day, dd.weekday, 
-            dl.region, dl.state, dl.city, dp.product_category, dp.price_per_unit, 
+            dl.region, dl.state, dl.city, dp.product_category, 
+            COALESCE(dp.price_per_unit, 100) as price_per_unit, 
             dg.gender_type, dsm.sales_method, fs.units_sold, fs.total_sales, fs.operating_profit, fs.operating_margin,
             dd.invoice_date
         FROM fact_sales fs
@@ -33,11 +34,12 @@ def load_data(_engine=None):
         try:
             df = pd.read_sql(query, _engine)
             df['invoice_date'] = pd.to_datetime(df['invoice_date'])
+            df['price_per_unit'] = pd.to_numeric(df['price_per_unit'], errors='coerce').fillna(100)  # USD default
             return df
         except Exception as e:
-            st.error(f"Gagal memuat data: {str(e)}")
+            st.error(f"Failed to load data: {str(e)}")
     
-    # Generate sample data
+    # Sample data in USD
     np.random.seed(42)
     dates = pd.date_range('2020-01-01', '2021-12-31', freq='D')
     sample_size = 1000
@@ -53,12 +55,12 @@ def load_data(_engine=None):
         'state': np.random.choice(['California', 'New York', 'Texas', 'Florida', 'Illinois'], sample_size),
         'city': np.random.choice(['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'], sample_size),
         'product_category': np.random.choice(['Men\'s Street Footwear', 'Women\'s Apparel', 'Men\'s Athletic Footwear'], sample_size),
-        'price_per_unit': np.random.uniform(50, 200, sample_size),
+        'price_per_unit': np.random.uniform(50, 200, sample_size),  # USD
         'gender_type': np.random.choice(['Men', 'Women'], sample_size),
         'sales_method': np.random.choice(['In-store', 'Online', 'Outlet'], sample_size),
         'units_sold': np.random.randint(1, 100, sample_size),
-        'total_sales': np.random.uniform(1000, 50000, sample_size),
-        'operating_profit': np.random.uniform(200, 15000, sample_size),
+        'total_sales': np.random.uniform(1000, 50000, sample_size),  # USD
+        'operating_profit': np.random.uniform(200, 15000, sample_size),  # USD
         'operating_margin': np.random.uniform(10, 50, sample_size),
         'invoice_date': np.random.choice(dates, sample_size)
     })
