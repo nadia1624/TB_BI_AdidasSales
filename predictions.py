@@ -49,8 +49,8 @@ def generate_retailer_alert(retailer_data):
     alerts = []
     top_performer = retailer_data.nlargest(1, 'total_sales').iloc[0]
     worst_performer = retailer_data.nsmallest(1, 'total_sales').iloc[0]
-    alerts.append(f"🏆 Top Performer: {top_performer['retailer_name']} dengan penjualan Rp {top_performer['total_sales']/1e6:.1f}M")
-    alerts.append(f"⚠️ Perlu Perhatian: {worst_performer['retailer_name']} dengan penjualan Rp {worst_performer['total_sales']/1e6:.1f}M")
+    alerts.append(f"🏆 Top Performer: {top_performer['retailer_name']} dengan penjualan $ {top_performer['total_sales']/1e6:.1f}M")
+    alerts.append(f"⚠️ Perlu Perhatian: {worst_performer['retailer_name']} dengan penjualan ${worst_performer['total_sales']/1e6:.1f}M")
     return alerts
 
 def generate_geographic_insights(regional_data):
