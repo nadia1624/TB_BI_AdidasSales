@@ -5,7 +5,7 @@ import streamlit as st
 
 def connect_to_database():
     try:
-        engine = create_engine('postgresql+psycopg2://postgres:rania123@localhost:5432/DW_Adidas')
+        engine = create_engine('postgresql+psycopg2://postgres:090203@localhost:5433/DW_Adidas')
         st.success("✅ Connected to DW_Adidas database!")
         return engine
     except Exception as e:

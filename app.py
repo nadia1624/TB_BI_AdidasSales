@@ -186,6 +186,15 @@ def get_theme_styles():
                 margin-bottom: 1rem;
             }
             
+            .chart-title {
+                font-family: 'Inter', sans-serif;
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: white;
+                margin-bottom: 1rem;
+                text-align: left;
+            }
+            
             .alert {
                 padding: 1rem 1.2rem;
                 border-radius: 12px;
@@ -265,11 +274,11 @@ def get_theme_styles():
             
             /* Light Mode Styles - Adidas Purple Theme */
             .stApp {
-                background: linear-gradient(135deg, #f3f0ff 0%, #e8e0ff 50%, #ddd6fe 100%);
+                background: linear-gradient(135deg, #f3f0ff 0%, #e8e0ff 50%, transparent);
             }
             
             .main {
-                padding: 0rem 1rem;
+                padding: 0;
             }
 
             .chart-title {
@@ -278,11 +287,11 @@ def get_theme_styles():
             }
             
             .dashboard-header {
-                background: linear-gradient(135deg, #7c4dff 0%, #6a1b9a 50%, #4a148c 100%);
+                background: linear-gradient(45deg, #7c4dff 0%, #6a1b9a 50%, #4a148c);
                 padding: 2.5rem;
                 border-radius: 20px;
                 margin-bottom: 2rem;
-                box-shadow: 0 20px 40px rgba(124, 77, 255, 0.3);
+                box-shadow: 0 20px 40px rgba(124, 77, 255, .3);
                 position: relative;
                 overflow: hidden;
             }
@@ -294,7 +303,7 @@ def get_theme_styles():
                 left: -50%;
                 width: 200%;
                 height: 200%;
-                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.25), transparent);
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,.25), transparent);
                 transform: rotate(45deg);
                 animation: shine 3s infinite;
             }
@@ -311,18 +320,18 @@ def get_theme_styles():
                 font-weight: 700;
                 margin: 0;
                 text-align: center;
-                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, .3);
                 position: relative;
                 z-index: 1;
             }
             
             .dashboard-subtitle {
-                color: rgba(255, 255, 255, 0.95);
+                color: rgba(255, 255, 255, .95);
                 font-family: 'Inter', sans-serif;
                 font-size: 1.1rem;
                 font-weight: 400;
                 text-align: center;
-                margin-top: 0.5rem;
+                margin-top: .5rem;
                 position: relative;
                 z-index: 1;
             }
@@ -339,8 +348,8 @@ def get_theme_styles():
                 border-radius: 20px;
                 padding: 2rem;
                 margin-bottom: 2rem;
-                box-shadow: 0 10px 40px rgba(124, 77, 255, 0.15);
-                border: 2px solid rgba(124, 77, 255, 0.1);
+                box-shadow: 0 10px 40px rgba(124, 77, 255, .15);
+                border: 2px solid rgba(124, 77, 255, .1);
             }
             
             .section-title {
@@ -349,21 +358,21 @@ def get_theme_styles():
                 font-weight: 600;
                 color: #4a148c;
                 margin-bottom: 1.5rem;
-                padding-bottom: 0.5rem;
+                padding-bottom: .5rem;
                 border-bottom: 3px solid #7c4dff;
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: .5rem;
             }
             
             .kpi-card {
-                background: linear-gradient(135deg, #f8f5ff 0%, #f0ebff 50%, #e8deff 100%);
-                border: 2px solid rgba(124, 77, 255, 0.3);
+                background: linear-gradient(135deg, #f8f5ff 0%, #f0ebff 50%, #e8deff);
+                border: 2px solid rgba(124, 77, 255, .3);
                 border-radius: 16px;
                 padding: 1.5rem;
                 text-align: center;
-                box-shadow: 0 8px 25px rgba(124, 77, 255, 0.2);
-                transition: all 0.3s ease;
+                box-shadow: 0 8px 25px rgba(124, 77, 255, .2);
+                transition: all .3s ease;
                 height: 160px;
                 display: flex;
                 flex-direction: column;
@@ -379,8 +388,8 @@ def get_theme_styles():
                 left: -100%;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(124, 77, 255, 0.15), transparent);
-                transition: left 0.5s;
+                background: linear-gradient(90deg, transparent, rgba(124, 77, 255, .15), transparent);
+                transition: left .5s;
             }
             
             .kpi-card:hover::before {
@@ -389,9 +398,9 @@ def get_theme_styles():
             
             .kpi-card:hover {
                 transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 20px 40px rgba(124, 77, 255, 0.3);
-                border-color: rgba(124, 77, 255, 0.6);
-                background: linear-gradient(135deg, #f5f0ff 0%, #ede4ff 50%, #e5d8ff 100%);
+                box-shadow: 0 20px 40px rgba(124, 77, 255, .3);
+                border-color: rgba(124, 77, 255, .6);
+                background: linear-gradient(135deg, #f5f0ff 0%, #ede4ff 50%, #e5d8ff);
             }
             
             .kpi-value {
@@ -399,44 +408,53 @@ def get_theme_styles():
                 font-size: 2.2rem;
                 font-weight: 700;
                 color: #4a148c;
-                margin: 0.5rem 0;
-                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                margin: .5rem 0;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, .1);
             }
             
             .kpi-label {
                 font-family: 'Inter', sans-serif;
-                font-size: 0.9rem;
+                font-size: .9rem;
                 font-weight: 500;
                 color: #7c4dff;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
+                letter-spacing: .5px;
             }
             
             .kpi-period {
                 font-family: 'Inter', sans-serif;
-                font-size: 0.8rem;
+                font-size: .8rem;
                 color: #6a1b9a;
-                margin-top: 0.3rem;
+                margin-top: .3rem;
             }
             
             .chart-container {
                 background: white;
                 border-radius: 15px;
                 padding: 1.5rem;
-                box-shadow: 0 4px 20px rgba(124, 77, 255, 0.1);
-                border: 1px solid rgba(124, 77, 255, 0.15);
+                box-shadow: 0 4px 20px rgba(124, 77, 255, .1);
+                border: 1px solid rgba(124, 77, 255, .15);
                 margin-bottom: 1rem;
+            }
+            
+            .chart-title {
+                font-family: 'Inter', sans-serif;
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #000000;
+                margin-bottom: 1rem;
+                text-align: left;
             }
             
             .alert {
                 padding: 1rem 1.2rem;
                 border-radius: 12px;
-                margin: 0.5rem 0;
+                margin: .5rem 0;
                 font-family: 'Inter', sans-serif;
-                font-size: 0.9rem;
+                font-size: .9rem;
                 font-weight: 500;
                 border-left: 4px solid;
-                animation: slideIn 0.5s ease-out;
+                animation: slideIn .5s ease-out;
             }
             
             .alert-success {
@@ -464,13 +482,13 @@ def get_theme_styles():
             }
             
             .insight-box {
-                background: linear-gradient(135deg, #f8f5ff 0%, #f0ebff 100%);
+                background: linear-gradient(135deg, #f8f5ff 0%, #f0ebff);
                 border-radius: 16px;
                 padding: 2rem;
                 margin: 1rem 0;
                 border-left: 4px solid #7c4dff;
-                box-shadow: 0 4px 20px rgba(124, 77, 255, 0.15);
-                border: 1px solid rgba(124, 77, 255, 0.1);
+                box-shadow: 0 4px 20px rgba(124, 77, 255, .15);
+                border: 1px solid rgba(124, 77, 255, .1);
             }
             
             .insight-title {
@@ -483,9 +501,9 @@ def get_theme_styles():
             
             .insight-text {
                 font-family: 'Inter', sans-serif;
-                font-size: 0.95rem;
+                font-size: .95rem;
                 line-height: 1.7;
-                color: #5e35b1;
+                color: #1a0f3d;
             }
             
             @keyframes slideIn {
@@ -519,13 +537,13 @@ def main():
     <div class="dashboard-header">
         <div class="theme-toggle">
         </div>
-        <h1 class="dashboard-title">👟 Dashboard Analisis Penjualan Adidas</h1>
+        <h1 class="dashboard-title">👟 Adidas Sales Analysis Dashboard</h1>
         <div class="dashboard-subtitle">Real-time insights and analytics for strategic decision making</div>
     </div>
     """, unsafe_allow_html=True)
     
     # Theme toggle functionality
-    col1, col2, col3 = st.columns([1, 1, 1])
+    col1, col2, col3 = st.columns(3)
     with col2:
         if st.button(
             "🌙 Switch to Dark Mode" if not st.session_state.dark_mode else "☀️ Switch to Light Mode",
@@ -546,6 +564,17 @@ def main():
         with st.spinner("Loading data..."):
             df = load_data(engine)
         
+        # Debug prints to diagnose issues
+        print("Data source:", "Database" if engine else "Sample")
+        print("DataFrame shape:", df.shape)
+        print("Columns:", df.columns.tolist())
+        print("Date range:", df['invoice_date'].min(), "to", df['invoice_date'].max())
+        print("price_per_unit sample:", df['price_per_unit'].head().to_list())
+        print("price_per_unit dtype:", df['price_per_unit'].dtype)
+        print("price_per_unit non-null count:", df['price_per_unit'].notnull().sum())
+        print("price_per_unit zero count:", (df['price_per_unit'] == 0).sum())
+        print("price_per_unit mean (raw):", df['price_per_unit'].mean())
+        
         if df.empty:
             st.error("❌ No data loaded. Check database or query.")
             return
@@ -553,11 +582,12 @@ def main():
         st.success(f"✅ Data loaded successfully")
         st.info(f"📈 {len(df):,} records | {len(df.columns)} columns")
         
-        # Debug info (can be hidden in production)
+        # Debug info in sidebar
         with st.expander("🔧 Debug Info"):
             st.write(f"Data source: {'Database' if engine else 'Sample'}")
             st.write(f"DataFrame shape: {df.shape}")
             st.write(f"Date range: {df['invoice_date'].min()} to {df['invoice_date'].max()}")
+            st.write(f"Price per unit mean: ${df['price_per_unit'].mean():,.2f}")
         
         st.markdown("---")
         
@@ -578,6 +608,10 @@ def main():
         
         start_date, end_date = period_options[selected_period]
         filtered_df = filter_data(df, start_date, end_date)
+        
+        print("Filtered df shape:", filtered_df.shape)
+        print("Filtered price_per_unit sample:", filtered_df['price_per_unit'].head().to_list())
+        print("Filtered price_per_unit mean:", filtered_df['price_per_unit'].mean())
         
         st.info(f"📊 Filtered to {len(filtered_df):,} records")
     
@@ -619,36 +653,71 @@ def main():
         </div>
     """, unsafe_allow_html=True)
     
+    # Get current and previous year
+    current_year = filtered_df['year'].max() if not filtered_df.empty else 2021
+    previous_year = current_year - 1
+    
+    # Compute previous year's metrics
+    prev_df = df[df['year'] == previous_year]
+    if not prev_df.empty:
+        prev_total_sales = prev_df['total_sales'].sum() / 1e6  # USD, in millions
+        prev_total_profit = prev_df['operating_profit'].sum() / 1e6  # USD, in millions
+        prev_total_units = prev_df['units_sold'].sum() / 1e6  # Millions
+        prev_avg_price = prev_df['price_per_unit'].dropna().mean() if prev_df['price_per_unit'].notnull().any() else 0  # USD
+    else:
+        prev_total_sales = prev_total_profit = prev_total_units = prev_avg_price = 0
+        print("Warning: No data for previous year", previous_year)
+    
+    # Calculate percentage changes
+    def format_pct_change(current, previous):
+        if previous == 0:
+            return "N/A"  # Avoid division by zero
+        pct_change = ((current - previous) / previous) * 100
+        symbol = "▲" if pct_change >= 0 else "▼"
+        return f"{symbol} {abs(pct_change):.1f}% vs. last year"
+    
+    sales_pct = format_pct_change(kpis['total_sales'], prev_total_sales)
+    profit_pct = format_pct_change(kpis['total_profit'], prev_total_profit)
+    units_pct = format_pct_change(kpis['total_units'], prev_total_units)
+    price_pct = format_pct_change(kpis['avg_price'], prev_avg_price)
+    
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         sales_alert = generate_performance_alert(kpis['total_sales'], kpis['historical_avg_sales'], "Sales")
         create_kpi_card(
-            "Total Penjualan",
-            f"$ {kpis['total_sales']:,.1f} M",
+            "Total Sales",
+            f"${kpis['total_sales']:,.1f}M",
+            sales_pct,
             sales_growth_text,
             sales_alert
         )
     with col2:
         profit_alert = generate_performance_alert(kpis['total_profit'], kpis['historical_avg_profit'], "Profit")
         create_kpi_card(
-            "Total Keuntungan",
-            f"$ {kpis['total_profit']:,.1f} M",
+            "Total Profit",
+            f"${kpis['total_profit']:,.1f}M",
+            profit_pct,
             profit_growth_text,
             profit_alert
         )
     
     with col3:
         create_kpi_card(
-            "Unit Terjual",
-            f"{kpis['total_units']:,.1f} Juta",
-            units_growth_text  # Ganti dengan variabel pertumbuhan yang baru
+            "Units Sold",
+            f"{kpis['total_units']:,.1f}M",
+            units_pct,
+            units_growth_text
         )
     with col4:
         create_kpi_card(
             "Harga Rata-rata per Unit",
             f"$ {kpis['avg_price']:,.0f}",
             price_growth_text  # Ganti dengan variabel pertumbuhan yang baru
+            "Avg. Price per Unit",
+            f"${kpis['avg_price']:,.0f}",
+            price_pct,
+            price_growth_text 
         )
     
     st.markdown('</div>', unsafe_allow_html=True)
@@ -657,7 +726,7 @@ def main():
     st.markdown("""
     <div class="section-container">
         <div class="section-title">
-            📊 Tren Penjualan
+            📊 Sales Trends
         </div>
     """, unsafe_allow_html=True)
     
@@ -666,20 +735,16 @@ def main():
         monthly_data = filtered_df.groupby('month').agg({'total_sales': 'sum', 'operating_profit': 'sum'}).reset_index()
         prediction_result, _, _ = generate_sales_prediction(monthly_data, algorithm='random_forest')
         plot_sales_profit_trend(monthly_data, prediction_result)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
         plot_multi_period_trend(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     col3, col4 = st.columns(2)
     with col3:
         plot_annual_sales_profit(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col4:
         plot_units_trend(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -687,16 +752,13 @@ def main():
     st.markdown("""
     <div class="section-container">
         <div class="section-title">
-            🏪 Wawasan Pengecer
+            🏪 Retailer Insights
         </div>
     """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
         plot_top_retailers(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Retailer alerts
         retailer_data = filtered_df.groupby('retailer_name').agg({'total_sales': 'sum'}).reset_index()
         retailer_alerts = generate_retailer_alert(retailer_data)
         for alert in retailer_alerts:
@@ -705,7 +767,6 @@ def main():
     
     with col2:
         plot_retailer_performance(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -713,35 +774,29 @@ def main():
     st.markdown("""
     <div class="section-container">
         <div class="section-title">
-            👥 Analisis Produk & Gender
+            👥 Product & Gender Analysis
         </div>
     """, unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     with col1:
         plot_product_category_performance(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
         plot_gender_distribution(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col3:
         plot_gender_preferences(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     col4, col5, col6 = st.columns(3)
     with col4:
         plot_gender_trend(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col5:
         plot_units_per_category(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col6:
         plot_margin_per_category(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -749,16 +804,13 @@ def main():
     st.markdown("""
     <div class="section-container">
         <div class="section-title">
-            🌍 Analisis Geografis
+            🌍 Geographic Analysis
         </div>
     """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
         plot_regional_sales(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Geographic insights
         regional_sales = filtered_df.groupby('region').agg({'total_sales': 'sum'}).reset_index()
         geo_insights = generate_geographic_insights(regional_sales)
         for insight in geo_insights:
@@ -767,7 +819,6 @@ def main():
     
     with col2:
         plot_sales_map(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -775,18 +826,16 @@ def main():
     st.markdown("""
     <div class="section-container">
         <div class="section-title">
-            🛒 Analisis Saluran Penjualan
+            🛒 Sales Channel Analysis
         </div>
     """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
         plot_sales_method_distribution(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
         plot_sales_method_trend(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -796,20 +845,68 @@ def main():
         <div class="section-title">
             💡 Wawasan Strategis & Rekomendasi
         </div>
-        <div class="insight-box">
-            <div class="insight-title">🎯 Wawasan Bisnis Utama</div>
-            <div class="insight-text">
-                <strong>📊 Analitik Prediktif:</strong> Model Random Forest menunjukkan akurasi superior (MAE lebih rendah) dibandingkan Linear Regression untuk forecasting penjualan, memungkinkan perencanaan bisnis yang lebih handal.<br><br>
-                
-                <strong>🏪 Optimisasi Pengecer:</strong> Fokuskan pengembangan kemitraan pada pengecer berkinerja rendah dengan margin profit rendah. Implementasikan program dukungan terarah untuk meningkatkan conversion rate penjualan mereka.<br><br>
-                
-                <strong>👥 Segmentasi Pelanggan:</strong> Manfaatkan pola pembelian berbasis gender untuk mengembangkan kampanye marketing yang dipersonalisasi dan rekomendasi produk yang resonan dengan segmen pelanggan spesifik.<br><br>
-                
-                <strong>🌍 Ekspansi Pasar:</strong> Identifikasi dan prioritaskan wilayah geografis dengan potensi yang belum dimanfaatkan. Kembangkan strategi market entry untuk region dengan volume penjualan rendah namun potensi pertumbuhan tinggi.<br><br>
-                
-                <strong>📈 Strategi Saluran:</strong> Optimisasi sales channel mix berdasarkan tren performa. Pertimbangkan peningkatan investasi pada saluran berkinerja tinggi sambil memperbaiki yang berkinerja rendah.
-            </div>
+    """, unsafe_allow_html=True)
+
+    # Interactive filter for insight focus
+    with st.expander("🔍 Sesuaikan Wawasan", expanded=True):
+        focus_area = st.selectbox(
+            "Pilih Area Fokus",
+            ["Semua", "Wilayah", "Pengecer", "Produk", "Gender", "Saluran Penjualan", "Peramalan"],
+            key="insight_focus"
+        )
+
+    # Generate data-driven insights
+    insights = []
+    if focus_area in ["Semua", "Wilayah"]:
+        top_region = regional_sales.nlargest(1, 'total_sales')
+        region_share = top_region['total_sales'].iloc[0] / filtered_df['total_sales'].sum() * 100
+        insights.append(
+            f"<strong>🌍 Fokus pada Wilayah Utama:</strong> {top_region['region'].iloc[0]} menyumbang ${top_region['total_sales'].iloc[0] / 1e6:.1f}M ({region_share:.1f}% dari total penjualan, Peta Penjualan). Tingkatkan anggaran pemasaran sebesar 25% untuk mencapai pertumbuhan penjualan 15% di wilayah ini dalam 6 bulan."
+        )
+    if focus_area in ["Semua", "Pengecer"]:
+        top_retailer = retailer_data.nlargest(1, 'total_sales')
+        retailer_share = top_retailer['total_sales'].iloc[0] / filtered_df['total_sales'].sum() * 100
+        low_performers = retailer_data.nsmallest(3, 'total_sales')['retailer_name'].tolist()
+        insights.append(
+            f"<strong>🏪 Optimalkan Kemitraan Pengecer:</strong> {top_retailer['retailer_name'].iloc[0]} menghasilkan ${top_retailer['total_sales'].iloc[0] / 1e6:.1f}M ({retailer_share:.1f}% dari penjualan, Top 10 Pengecer). Luncurkan promosi eksklusif untuk meningkatkan penjualan sebesar 12%. Untuk pengecer berkinerja rendah ({', '.join(low_performers)}), tawarkan pelatihan penjualan untuk meningkatkan konversi."
+        )
+    if focus_area in ["Semua", "Produk"]:
+        top_category = filtered_df.groupby('product_category').agg({'total_sales': 'sum'}).nlargest(1, 'total_sales')
+        category_share = top_category['total_sales'].iloc[0] / filtered_df['total_sales'].sum() * 100
+        insights.append(
+            f"<strong>👕 Prioritaskan Kategori Produk:</strong> {top_category.index[0]} menghasilkan ${top_category['total_sales'].iloc[0] / 1e6:.1f}M ({category_share:.1f}% dari penjualan, Performa Kategori Produk). Tambah stok 20% untuk Q4 dan luncurkan kampanye musiman untuk meningkatkan penjualan sebesar 10%."
+        )
+    if focus_area in ["Semua", "Gender"]:
+        top_gender = filtered_df.groupby('gender_type').agg({'total_sales': 'sum'}).reset_index()
+        top_gender_category = filtered_df[filtered_df['gender_type'] == top_gender['gender_type'].iloc[0]].groupby('product_category').agg({'total_sales': 'sum'}).nlargest(2, 'total_sales').index.tolist()
+        gender_share = top_gender['total_sales'].iloc[0] / filtered_df['total_sales'].sum() * 100
+        insights.append(
+            f"<strong>👥 Sesuaikan Kampanye Gender:</strong> Pelanggan {top_gender['gender_type'].iloc[0]} menyumbang ${top_gender['total_sales'].iloc[0] / 1e6:.1f}M ({gender_share:.1f}% dari penjualan, Tren Pembelian Gender), dengan preferensi untuk {', '.join(top_gender_category)}. Targetkan iklan digital untuk kategori ini guna meningkatkan konversi sebesar 8%."
+        )
+    if focus_area in ["Semua", "Saluran Penjualan"]:
+        top_method = filtered_df.groupby('sales_method').agg({'total_sales': 'sum'}).nlargest(1, 'total_sales')
+        method_share = top_method['total_sales'].iloc[0] / filtered_df['total_sales'].sum() * 100
+        insights.append(
+            f"<strong>🛒 Perkuat Saluran Penjualan:</strong> {top_method.index[0]} menghasilkan ${top_method['total_sales'].iloc[0] / 1e6:.1f}M ({method_share:.1f}% dari penjualan, Distribusi Metode Penjualan). Investasikan $750K untuk meningkatkan UX e-commerce, targetkan pertumbuhan 15% dalam 12 bulan."
+        )
+    if focus_area in ["Semua", "Peramalan"]:
+        historical_avg = monthly_data['total_sales'].mean() / 1e6
+        forecast_diff = (prediction_result['prediction'] / 1e6 - historical_avg) / historical_avg * 100
+        insights.append(
+            f"<strong>📈 Rencanakan Berdasarkan Peramalan:</strong> Prediksi penjualan bulan depan ${prediction_result['prediction'] / 1e6:.1f}M (MAE: ${prediction_result['mae'] / 1e6:.1f}M), {abs(forecast_diff):.1f}% {'lebih tinggi' if forecast_diff > 0 else 'lebih rendah'} dari rata-rata historis (Tren Penjualan Bulanan). Siapkan stok tambahan dan optimalkan logistik untuk efisiensi biaya 5%."
+        )
+
+    # Display insights
+    st.markdown("""
+    <div class="insight-box">
+        <div class="insight-title">🎯 Wawasan Bisnis Utama</div>
+        <div class="insight-text">
+    """, unsafe_allow_html=True)
+    for insight in insights:
+        st.markdown(f"{insight}<br><br>", unsafe_allow_html=True)
+    st.markdown("""
         </div>
+    </div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -817,7 +914,7 @@ def main():
     st.markdown("""
     <div style="text-align: center; padding: 2rem; color: #7f8c8d; font-size: 0.9rem;">
         <hr style="border: 1px solid #ecf0f1; margin: 2rem 0;">
-        🏃‍♂️ Dashboard Analisis Penjualan Adidas • Dibuat dengan Streamlit • Terakhir diperbarui: Real-time
+        🏃‍♂️ Adidas Sales Analysis Dashboard • Built with Streamlit • Last updated: Real-time
     </div>
     """, unsafe_allow_html=True)
 
