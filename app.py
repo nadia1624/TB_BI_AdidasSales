@@ -24,13 +24,12 @@ if 'dark_mode' not in st.session_state:
     st.session_state.dark_mode = False
 
 def get_theme_styles():
-    """Return CSS styles based on current theme with Adidas dashboard color palette"""
+    """Return CSS styles for dark mode with Adidas dashboard color palette"""
     if st.session_state.dark_mode:
         return """
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
             
-            /* Dark Mode Styles - Adidas Purple Theme */
             .stApp {
                 background: linear-gradient(135deg, #2d1b69 0%, #1a0f3d 50%, #0f0629 100%);
                 color: white;
@@ -88,13 +87,6 @@ def get_theme_styles():
                 margin-top: 0.5rem;
                 position: relative;
                 z-index: 1;
-            }
-            
-            .theme-toggle {
-                position: absolute;
-                top: 1rem;
-                right: 1rem;
-                z-index: 10;
             }
             
             .section-container {
@@ -269,6 +261,10 @@ def get_theme_styles():
                 from { opacity: 0; transform: translateX(-20px); }
                 to { opacity: 1; transform: translateX(0); }
             }
+            .chart-title {
+                color: white;
+                font-weight: bold;
+            }
         </style>
         """
     else:
@@ -283,6 +279,11 @@ def get_theme_styles():
             
             .main {
                 padding: 0;
+            }
+
+            .chart-title {
+                color: #4a148c;
+                font-weight: bold;
             }
             
             .dashboard-header {
@@ -535,19 +536,6 @@ def main():
     st.markdown(f"""
     <div class="dashboard-header">
         <div class="theme-toggle">
-            <button onclick="toggleTheme()" style="
-                background: rgba(255,255,255,0.2);
-                border: 1px solid rgba(255,255,255,0.3);
-                border-radius: 25px;
-                padding: 8px 16px;
-                color: white;
-                cursor: pointer;
-                font-size: 14px;
-                backdrop-filter: blur(10px);
-                transition: all 0.3s ease;
-            ">
-                {'🌙 Dark Mode' if not st.session_state.dark_mode else '☀️ Light Mode'}
-            </button>
         </div>
         <h1 class="dashboard-title">👟 Adidas Sales Analysis Dashboard</h1>
         <div class="dashboard-subtitle">Real-time insights and analytics for strategic decision making</div>
@@ -629,6 +617,33 @@ def main():
     
     # Calculate KPIs
     kpis = calculate_kpis(filtered_df, df)
+
+    current_year = filtered_df['year'].max()
+    last_year = current_year - 1
+    # Sum total sales and profit for current and last year from full data
+    total_sales_current = df[df['year'] == current_year]['total_sales'].sum() / 1e6  # in millions
+    total_sales_last = df[df['year'] == last_year]['total_sales'].sum() / 1e6  # in millions
+    total_profit_current = df[df['year'] == current_year]['operating_profit'].sum() / 1e6
+    total_profit_last = df[df['year'] == last_year]['operating_profit'].sum() / 1e6
+    # Calculate growth percentages with safe zero-division check
+    sales_growth = ((total_sales_current - total_sales_last) / total_sales_last * 100) if total_sales_last > 0 else 0
+    profit_growth = ((total_profit_current - total_profit_last) / total_profit_last * 100) if total_profit_last > 0 else 0
+    # Format growth strings for KPI cards
+    sales_growth_text = f"▲ {sales_growth:.1f}% dibanding tahun lalu" if sales_growth >= 0 else f"▼ {abs(sales_growth):.1f}% dibanding tahun lalu"
+    profit_growth_text = f"▲ {profit_growth:.1f}% dibanding tahun lalu" if profit_growth >= 0 else f"▼ {abs(profit_growth):.1f}% dibanding tahun lalu"
+
+    # Hitung total unit terjual untuk tahun ini dan tahun lalu
+    total_units_current = df[df['year'] == current_year]['units_sold'].sum() / 1e6  # dalam juta
+    total_units_last = df[df['year'] == last_year]['units_sold'].sum() / 1e6  # dalam juta
+    # Hitung pertumbuhan unit terjual
+    units_growth = ((total_units_current - total_units_last) / total_units_last * 100) if total_units_last > 0 else 0
+    units_growth_text = f"▲ {units_growth:.1f}% dibanding tahun lalu" if units_growth >= 0 else f"▼ {abs(units_growth):.1f}% dibanding tahun lalu"
+    # Hitung harga rata-rata per unit untuk tahun ini dan tahun lalu
+    avg_price_current = df[df['year'] == current_year]['price_per_unit'].mean()
+    avg_price_last = df[df['year'] == last_year]['price_per_unit'].mean()
+    # Hitung pertumbuhan harga rata-rata per unit
+    price_growth = ((avg_price_current - avg_price_last) / avg_price_last * 100) if avg_price_last > 0 else 0
+    price_growth_text = f"▲ {price_growth:.1f}% dibanding tahun lalu" if price_growth >= 0 else f"▼ {abs(price_growth):.1f}% dibanding tahun lalu"
     
     # Section 1: Ringkasan Metrik (Executive Summary)
     st.markdown("""
@@ -674,15 +689,16 @@ def main():
             "Total Sales",
             f"${kpis['total_sales']:,.1f}M",
             sales_pct,
+            sales_growth_text,
             sales_alert
         )
-    
     with col2:
         profit_alert = generate_performance_alert(kpis['total_profit'], kpis['historical_avg_profit'], "Profit")
         create_kpi_card(
             "Total Profit",
             f"${kpis['total_profit']:,.1f}M",
             profit_pct,
+            profit_growth_text,
             profit_alert
         )
     
@@ -690,14 +706,18 @@ def main():
         create_kpi_card(
             "Units Sold",
             f"{kpis['total_units']:,.1f}M",
-            units_pct
+            units_pct,
+            units_growth_text
         )
-    
     with col4:
         create_kpi_card(
+            "Harga Rata-rata per Unit",
+            f"$ {kpis['avg_price']:,.0f}",
+            price_growth_text  # Ganti dengan variabel pertumbuhan yang baru
             "Avg. Price per Unit",
             f"${kpis['avg_price']:,.0f}",
-            price_pct
+            price_pct,
+            price_growth_text 
         )
     
     st.markdown('</div>', unsafe_allow_html=True)
