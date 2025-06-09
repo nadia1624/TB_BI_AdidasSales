@@ -9,13 +9,13 @@ def get_theme_colors():
         return {
             'bg_color': 'rgba(45, 27, 105, 0.8)',
             'text_color': 'white',
-            'grid_color': 'rgba(128, 90, 213, 0.15)'
+            'grid_color': 'rgba(255, 255, 255, 0.25)'
         }
     else:
         return {
             'bg_color': 'rgba(255, 255, 255, 0.9)',
             'text_color': '#4a148c',
-            'grid_color': 'rgba(128, 90, 213, 0.1)'
+            'grid_color': 'rgba(74, 20, 140, 0.25)'
         }
 
 def get_purple_palette():
@@ -38,9 +38,28 @@ def apply_chart_layout(fig, title_x='', title_y='', height=400, showlegend=True)
         paper_bgcolor=theme['bg_color'],
         plot_bgcolor=theme['bg_color'],
         font=dict(family='Inter, sans-serif', size=14, color=theme['text_color']),
-        xaxis=dict(gridcolor=theme['grid_color']),
-        yaxis=dict(gridcolor=theme['grid_color']),
-        legend=dict(x=0.5, xanchor='center', y=1.1, orientation='h') if showlegend else {}
+        xaxis=dict(
+            gridcolor=theme['grid_color'],
+            title_font_color=theme['text_color'],  # Tambahkan ini
+            tickfont_color=theme['text_color']     # Tambahkan ini
+        ),
+        yaxis=dict(
+            gridcolor=theme['grid_color'],
+            title_font_color=theme['text_color'],  # Tambahkan ini
+            tickfont_color=theme['text_color']     # Tambahkan ini
+        ),
+        yaxis2=dict(
+            gridcolor=theme['grid_color'],
+            title_font_color=theme['text_color'],  # Tambahkan ini
+            tickfont_color=theme['text_color']     # Tambahkan ini
+        ),
+        legend=dict(
+            x=0.5, 
+            xanchor='center', 
+            y=1.1, 
+            orientation='h',
+            font_color=theme['text_color']  # Tambahkan ini
+        ) if showlegend else {}
     )
     return fig
 
@@ -83,12 +102,12 @@ def plot_sales_profit_trend(monthly_data, prediction_result):
     fig = apply_chart_layout(fig, 'Month', 'Total Sales (Million $)')
     fig.update_layout(
         xaxis=dict(
-            title='Month',
+            # title='Month',
             tickvals=list(range(1, 13)),
             ticktext=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         ),
-        yaxis=dict(title='Total Sales (Million $)', tickformat='.2f', tickprefix='$ '),
-        yaxis2=dict(title='Total Profit (Million $)', tickformat='.2f', tickprefix='$ ', overlaying='y', side='right'),
+        yaxis=dict(tickformat='.2f', tickprefix='$ '),
+        yaxis2=dict(tickformat='.2f', tickprefix='$ ', overlaying='y', side='right'),
         font=dict(family='Inter, sans-serif', size=14, color=theme['text_color']),
         hovermode='x unified'
     )
@@ -97,16 +116,16 @@ def plot_sales_profit_trend(monthly_data, prediction_result):
     st.plotly_chart(fig, use_container_width=True)
 
     # Display prediction results if available
-    if isinstance(prediction_result, dict):
-        prediction_usd = prediction_result['prediction'] / 1e6
-        mae_usd = prediction_result['mae'] / 1e6
-        st.markdown(f"""
-            <div class="prediction-box">
-                📊 <strong>Next Month Prediction:</strong> ${prediction_usd:.1f}M<br>
-                📈 <strong>Trend:</strong> {prediction_result['trend'].upper()}<br>
-                📉 <strong>MAE:</strong> ${mae_usd:.1f}M
-            </div>
-        """, unsafe_allow_html=True)
+    # if isinstance(prediction_result, dict):
+    #     prediction_usd = prediction_result['prediction'] / 1e6
+    #     mae_usd = prediction_result['mae'] / 1e6
+    #     st.markdown(f"""
+    #         <div class="prediction-box">
+    #             📊 <strong>Next Month Prediction:</strong> ${prediction_usd:.1f}M<br>
+    #             📈 <strong>Trend:</strong> {prediction_result['trend'].upper()}<br>
+    #             📉 <strong>MAE:</strong> ${mae_usd:.1f}M
+    #         </div>
+    #     """, unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -138,8 +157,8 @@ def plot_multi_period_trend(filtered_df):
     # Apply consistent styling
     fig = apply_chart_layout(fig, 'Year', 'Total Sales (Million $)', showlegend=False)
     fig.update_layout(
-        xaxis=dict(title='Year', tickmode='linear'),
-        yaxis=dict(title='Total Sales (Million $)', tickformat='.2f', tickprefix='$ '),
+        xaxis=dict(tickmode='linear'),
+        yaxis=dict(tickformat='.2f', tickprefix='$ '),
         hovermode='x unified'
     )
 
@@ -185,7 +204,7 @@ def plot_annual_sales_profit(filtered_df):
     # Apply consistent styling
     fig = apply_chart_layout(fig, 'Year', 'Amount ($)')
     fig.update_layout(
-        xaxis=dict(title='Year', tickmode='linear'),
+        xaxis=dict(tickmode='linear'),
         yaxis_title='Amount ($)',
         yaxis_tickformat='.2f',
         yaxis_tickprefix='$ ',
@@ -222,7 +241,7 @@ def plot_units_trend(filtered_df):
     fig = apply_chart_layout(fig, 'Month', 'Units Sold')
     fig.update_layout(
         xaxis=dict(
-            title='Month',
+            # title='Month',
             tickvals=list(range(1, 13)),
             ticktext=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         ),
@@ -298,8 +317,8 @@ def plot_retailer_performance(filtered_df):
     fig.update_layout(
         xaxis_tickformat='.2f',
         xaxis_tickprefix='$ ',
-        xaxis=dict(title='Total Sales ($)'),
-        yaxis=dict(title='Operating Margin (%)'),
+        # xaxis=dict(title='Total Sales ($)'),
+        # yaxis=dict(title='Operating Margin (%)'),
     )
     
     st.plotly_chart(fig, use_container_width=True)
@@ -346,12 +365,7 @@ def plot_product_category_performance(filtered_df):
     st.plotly_chart(fig, use_container_width=True)
     
     best_category = cat_perf.nlargest(1, 'total_sales_usd').iloc[0]
-    st.markdown(f"""
-        <div class="alert-success">
-            🏅 Best Category: {best_category['product_category']} 
-            (${best_category['total_sales_usd']:.1f}M)
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 def plot_gender_distribution(filtered_df):
@@ -509,24 +523,24 @@ def plot_gender_preferences(filtered_df):
     
     st.plotly_chart(fig, use_container_width=True)
     
-    # Add summary insights
-    if len(gender_pref) > 0:
-        # Find top category for each gender
-        insights = []
-        for gender in gender_pref['gender_type'].unique():
-            gender_data = gender_pref[gender_pref['gender_type'] == gender]
-            if len(gender_data) > 0:
-                top_category = gender_data[categories].iloc[0].idxmax()
-                top_value = gender_data[categories].iloc[0].max()
-                insights.append(f"<strong>{gender}:</strong> {top_category} (${top_value:.1f}M)")
+    # # Add summary insights
+    # if len(gender_pref) > 0:
+    #     # Find top category for each gender
+    #     insights = []
+    #     for gender in gender_pref['gender_type'].unique():
+    #         gender_data = gender_pref[gender_pref['gender_type'] == gender]
+    #         if len(gender_data) > 0:
+    #             top_category = gender_data[categories].iloc[0].idxmax()
+    #             top_value = gender_data[categories].iloc[0].max()
+    #             insights.append(f"<strong>{gender}:</strong> {top_category} (${top_value:.1f}M)")
         
-        if insights:
-            st.markdown(f"""
-                <div class="alert-success">
-                    🎯 <strong>Top Preferences:</strong><br>
-                    {' • '.join(insights)}
-                </div>
-            """, unsafe_allow_html=True)
+    #     if insights:
+    #         st.markdown(f"""
+    #             <div class="alert-success">
+    #                 🎯 <strong>Top Preferences:</strong><br>
+    #                 {' • '.join(insights)}
+    #             </div>
+    #         """, unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -556,7 +570,7 @@ def plot_gender_trend(filtered_df):
     fig = apply_chart_layout(fig, 'Month', 'Total Sales ($)', height=350)
     fig.update_layout(
         xaxis=dict(
-            title='Month',
+            # title='Month',
             tickvals=list(range(1, 13)),
             ticktext=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         ),
@@ -596,13 +610,13 @@ def plot_units_per_category(filtered_df):
     
     st.plotly_chart(fig, use_container_width=True)
     
-    top_category = units_cat.nlargest(1, 'units_sold').iloc[0]
-    st.markdown(f"""
-        <div class="alert-success">
-            🏆 Top Category: {top_category['product_category']} 
-            ({top_category['units_sold']} units)
-        </div>
-    """, unsafe_allow_html=True)
+    # top_category = units_cat.nlargest(1, 'units_sold').iloc[0]
+    # st.markdown(f"""
+    #     <div class="alert-success">
+    #         🏆 Top Category: {top_category['product_category']} 
+    #         ({top_category['units_sold']} units)
+    #     </div>
+    # """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 def plot_margin_per_category(filtered_df):
@@ -634,13 +648,13 @@ def plot_margin_per_category(filtered_df):
     
     st.plotly_chart(fig, use_container_width=True)
     
-    top_margin = margin_cat.nlargest(1, 'operating_margin').iloc[0]
-    st.markdown(f"""
-        <div class="alert-success">
-            💰 Highest Margin: {top_margin['product_category']} 
-            ({top_margin['operating_margin']:.1f}%)
-        </div>
-    """, unsafe_allow_html=True)
+    # top_margin = margin_cat.nlargest(1, 'operating_margin').iloc[0]
+    # st.markdown(f"""
+    #     <div class="alert-success">
+    #         💰 Highest Margin: {top_margin['product_category']} 
+    #         ({top_margin['operating_margin']:.1f}%)
+    #     </div>
+    # """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 def plot_regional_sales(filtered_df):
@@ -780,13 +794,13 @@ def plot_sales_map(filtered_df):
     
     st.plotly_chart(fig, use_container_width=True)
     
-    top_city = city_sales.nlargest(1, 'total_sales_usd').iloc[0]
-    st.markdown(f"""
-        <div class="alert-success">
-            🌆 Top City: {top_city['city']} 
-            (${top_city['total_sales_usd']:.1f}M)
-        </div>
-    """, unsafe_allow_html=True)
+    # top_city = city_sales.nlargest(1, 'total_sales_usd').iloc[0]
+    # st.markdown(f"""
+    #     <div class="alert-success">
+    #         🌆 Top City: {top_city['city']} 
+    #         (${top_city['total_sales_usd']:.1f}M)
+    #     </div>
+    # """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 
@@ -821,19 +835,20 @@ def plot_sales_method_distribution(filtered_df):
     
     st.plotly_chart(fig, use_container_width=True)
     
-    dominant_method = sales_method.nlargest(1, 'total_sales_usd').iloc[0]
-    st.markdown(f"""
-        <div class="alert-success">
-            🎯 Dominant Method: {dominant_method['sales_method']} 
-            (${dominant_method['total_sales_usd']:.1f}M)
-        </div>
-    """, unsafe_allow_html=True)
+    # dominant_method = sales_method.nlargest(1, 'total_sales_usd').iloc[0]
+    # st.markdown(f"""
+    #     <div class="alert-success">
+    #         🎯 Dominant Method: {dominant_method['sales_method']} 
+    #         (${dominant_method['total_sales_usd']:.1f}M)
+    #     </div>
+    # """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 
 def plot_sales_method_trend(filtered_df):
     st.markdown('<div class="chart-container"><div class="chart-title">Sales Method Trend</div>', unsafe_allow_html=True)
     
+    # Prepare data
     method_trend = filtered_df.groupby(['month', 'sales_method']).agg({'total_sales': 'sum'}).reset_index()
     method_trend['total_sales_usd'] = method_trend['total_sales'] / 1e6 
     
@@ -843,7 +858,7 @@ def plot_sales_method_trend(filtered_df):
     fig = go.Figure()
     sales_methods = method_trend['sales_method'].unique()
     
-    # Tambah satu garis untuk setiap metode penjualan
+    # Add one line for each sales method
     for i, method in enumerate(sales_methods):
         data = method_trend[method_trend['sales_method'] == method]
         fig.add_trace(go.Scatter(
@@ -856,15 +871,13 @@ def plot_sales_method_trend(filtered_df):
             hovertemplate=f'Month: %{{x}}<br>Method: {method}<br>Total Sales: $%{{y:.2f}}M<extra></extra>'
         ))
     
-    # Terapkan styling yang konsisten
+    # Apply consistent styling
+    fig = apply_chart_layout(fig, 'Month', 'Total Sales (Million $)')
     fig.update_layout(
-        xaxis_title='Month',
         xaxis=dict(
-            title='Month',
             tickvals=list(range(1, 13)),
             ticktext=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         ),
-        yaxis_title='Total Sales ($)',
         yaxis=dict(tickformat='.2f', tickprefix='$ '),
         height=350,
         margin=dict(l=80, r=40, t=60, b=40),
@@ -876,4 +889,13 @@ def plot_sales_method_trend(filtered_df):
     )
     
     st.plotly_chart(fig, use_container_width=True)
+    
+    # Display method performance summary
+    total_sales_by_method = method_trend.groupby('sales_method')['total_sales_usd'].sum().reset_index()
+    best_method = total_sales_by_method.loc[total_sales_by_method['total_sales_usd'].idxmax()]
+    total_methods = len(sales_methods)
+    avg_sales = total_sales_by_method['total_sales_usd'].mean()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
     st.markdown('</div>', unsafe_allow_html=True)

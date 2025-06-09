@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from database import connect_to_database, load_data
 from processing import filter_data, calculate_kpis
-from predictions import generate_sales_prediction, generate_performance_alert, generate_retailer_alert, generate_geographic_insights
+from predictions import generate_sales_prediction, generate_performance_alert, generate_retailer_alert, generate_geographic_insights, generate_prediction_alert, generate_category_alert, generate_gender_preference_alert, generate_units_category_alert, generate_margin_category_alert, generate_city_alert, generate_sales_method_alert
 from visualizations import (
     plot_sales_profit_trend, plot_multi_period_trend, plot_annual_sales_profit,
     plot_units_trend, plot_top_retailers, plot_retailer_performance,
@@ -186,15 +186,6 @@ def get_theme_styles():
                 margin-bottom: 1rem;
             }
             
-            .chart-title {
-                font-family: 'Inter', sans-serif;
-                font-size: 1.2rem;
-                font-weight: 600;
-                color: white;
-                margin-bottom: 1rem;
-                text-align: left;
-            }
-            
             .alert {
                 padding: 1rem 1.2rem;
                 border-radius: 12px;
@@ -229,6 +220,7 @@ def get_theme_styles():
                 background: rgba(124, 77, 255, 0.25);
                 color: #b39ddb;
                 border-left-color: #7c4dff;
+                margin-bottom: 1rem;
             }
             
             .insight-box {
@@ -274,11 +266,12 @@ def get_theme_styles():
             
             /* Light Mode Styles - Adidas Purple Theme */
             .stApp {
-                background: linear-gradient(135deg, #f3f0ff 0%, #e8e0ff 50%, transparent);
+                background: linear-gradient(135deg, #f8f5ff 0%, #f0ebff 50%, #e8deff 100%);
+                color: #2d1b69;
             }
             
             .main {
-                padding: 0;
+                padding: 0rem 1rem;
             }
 
             .chart-title {
@@ -287,13 +280,14 @@ def get_theme_styles():
             }
             
             .dashboard-header {
-                background: linear-gradient(45deg, #7c4dff 0%, #6a1b9a 50%, #4a148c);
+                background: linear-gradient(135deg, #7c4dff 0%, #6a1b9a 50%, #4a148c 100%);
                 padding: 2.5rem;
                 border-radius: 20px;
                 margin-bottom: 2rem;
-                box-shadow: 0 20px 40px rgba(124, 77, 255, .3);
+                box-shadow: 0 20px 40px rgba(124, 77, 255, 0.4);
                 position: relative;
                 overflow: hidden;
+                color: white;
             }
             
             .dashboard-header::before {
@@ -303,7 +297,7 @@ def get_theme_styles():
                 left: -50%;
                 width: 200%;
                 height: 200%;
-                background: linear-gradient(45deg, transparent, rgba(255,255,255,.25), transparent);
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.25), transparent);
                 transform: rotate(45deg);
                 animation: shine 3s infinite;
             }
@@ -320,36 +314,30 @@ def get_theme_styles():
                 font-weight: 700;
                 margin: 0;
                 text-align: center;
-                text-shadow: 2px 2px 8px rgba(0, 0, 0, .3);
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
                 position: relative;
                 z-index: 1;
             }
             
             .dashboard-subtitle {
-                color: rgba(255, 255, 255, .95);
+                color: rgba(255, 255, 255, 0.9);
                 font-family: 'Inter', sans-serif;
                 font-size: 1.1rem;
                 font-weight: 400;
                 text-align: center;
-                margin-top: .5rem;
+                margin-top: 0.5rem;
                 position: relative;
                 z-index: 1;
             }
             
-            .theme-toggle {
-                position: absolute;
-                top: 1rem;
-                right: 1rem;
-                z-index: 10;
-            }
-            
             .section-container {
-                background: white;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(15px);
+                border: 1px solid rgba(124, 77, 255, 0.2);
                 border-radius: 20px;
                 padding: 2rem;
                 margin-bottom: 2rem;
-                box-shadow: 0 10px 40px rgba(124, 77, 255, .15);
-                border: 2px solid rgba(124, 77, 255, .1);
+                box-shadow: 0 8px 32px rgba(124, 77, 255, 0.15);
             }
             
             .section-title {
@@ -358,21 +346,22 @@ def get_theme_styles():
                 font-weight: 600;
                 color: #4a148c;
                 margin-bottom: 1.5rem;
-                padding-bottom: .5rem;
+                padding-bottom: 0.5rem;
                 border-bottom: 3px solid #7c4dff;
                 display: flex;
                 align-items: center;
-                gap: .5rem;
+                gap: 0.5rem;
             }
             
             .kpi-card {
-                background: linear-gradient(135deg, #f8f5ff 0%, #f0ebff 50%, #e8deff);
-                border: 2px solid rgba(124, 77, 255, .3);
+                background: linear-gradient(135deg, rgba(248, 245, 255, 0.95) 0%, rgba(240, 235, 255, 0.95) 50%, rgba(232, 222, 255, 0.95) 100%);
+                backdrop-filter: blur(15px);
+                border: 2px solid rgba(124, 77, 255, 0.3);
                 border-radius: 16px;
                 padding: 1.5rem;
                 text-align: center;
-                box-shadow: 0 8px 25px rgba(124, 77, 255, .2);
-                transition: all .3s ease;
+                box-shadow: 0 8px 32px rgba(124, 77, 255, 0.2);
+                transition: all 0.3s ease;
                 height: 160px;
                 display: flex;
                 flex-direction: column;
@@ -388,8 +377,8 @@ def get_theme_styles():
                 left: -100%;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(124, 77, 255, .15), transparent);
-                transition: left .5s;
+                background: linear-gradient(90deg, transparent, rgba(124, 77, 255, 0.15), transparent);
+                transition: left 0.5s;
             }
             
             .kpi-card:hover::before {
@@ -398,9 +387,9 @@ def get_theme_styles():
             
             .kpi-card:hover {
                 transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 20px 40px rgba(124, 77, 255, .3);
-                border-color: rgba(124, 77, 255, .6);
-                background: linear-gradient(135deg, #f5f0ff 0%, #ede4ff 50%, #e5d8ff);
+                box-shadow: 0 20px 40px rgba(124, 77, 255, 0.35);
+                border-color: rgba(124, 77, 255, 0.6);
+                background: linear-gradient(135deg, rgba(245, 240, 255, 0.95) 0%, rgba(237, 230, 255, 0.95) 50%, rgba(229, 216, 255, 0.95) 100%);
             }
             
             .kpi-value {
@@ -408,87 +397,82 @@ def get_theme_styles():
                 font-size: 2.2rem;
                 font-weight: 700;
                 color: #4a148c;
-                margin: .5rem 0;
-                text-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+                margin: 0.5rem 0;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
             
             .kpi-label {
                 font-family: 'Inter', sans-serif;
-                font-size: .9rem;
+                font-size: 0.9rem;
                 font-weight: 500;
                 color: #7c4dff;
                 text-transform: uppercase;
-                letter-spacing: .5px;
+                letter-spacing: 0.5px;
             }
             
             .kpi-period {
                 font-family: 'Inter', sans-serif;
-                font-size: .8rem;
+                font-size: 0.8rem;
                 color: #6a1b9a;
-                margin-top: .3rem;
+                margin-top: 0.3rem;
             }
             
             .chart-container {
-                background: white;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(124, 77, 255, 0.2);
                 border-radius: 15px;
                 padding: 1.5rem;
-                box-shadow: 0 4px 20px rgba(124, 77, 255, .1);
-                border: 1px solid rgba(124, 77, 255, .15);
+                box-shadow: 0 4px 20px rgba(124, 77, 255, 0.1);
                 margin-bottom: 1rem;
-            }
-            
-            .chart-title {
-                font-family: 'Inter', sans-serif;
-                font-size: 1.2rem;
-                font-weight: 600;
-                color: #000000;
-                margin-bottom: 1rem;
-                text-align: left;
             }
             
             .alert {
                 padding: 1rem 1.2rem;
                 border-radius: 12px;
-                margin: .5rem 0;
+                margin: 0.5rem 0;
                 font-family: 'Inter', sans-serif;
-                font-size: .9rem;
+                font-size: 0.9rem;
                 font-weight: 500;
                 border-left: 4px solid;
-                animation: slideIn .5s ease-out;
+                backdrop-filter: blur(10px);
+                animation: slideIn 0.5s ease-out;
             }
             
             .alert-success {
-                background-color: #e8f5e8;
+                background: rgba(76, 175, 80, 0.15);
                 color: #2e7d2e;
                 border-left-color: #4caf50;
             }
             
             .alert-warning {
-                background-color: #fffbf0;
+                background: rgba(255, 193, 7, 0.15);
                 color: #b8860b;
                 border-left-color: #ffc107;
             }
             
             .alert-danger {
-                background-color: #ffeaea;
+                background: rgba(244, 67, 54, 0.15);
                 color: #c62828;
                 border-left-color: #f44336;
             }
             
             .alert-info {
-                background-color: #f3f0ff;
+                background: rgba(124, 77, 255, 0.15);
                 color: #4a148c;
                 border-left-color: #7c4dff;
+                margin-bottom: 1rem;
             }
             
             .insight-box {
-                background: linear-gradient(135deg, #f8f5ff 0%, #f0ebff);
+                background: linear-gradient(135deg, rgba(248, 245, 255, 0.9) 0%, rgba(240, 235, 255, 0.9) 100%);
+                backdrop-filter: blur(15px);
+                border: 1px solid rgba(124, 77, 255, 0.3);
                 border-radius: 16px;
                 padding: 2rem;
                 margin: 1rem 0;
                 border-left: 4px solid #7c4dff;
-                box-shadow: 0 4px 20px rgba(124, 77, 255, .15);
-                border: 1px solid rgba(124, 77, 255, .1);
+                box-shadow: 0 4px 20px rgba(124, 77, 255, 0.15);
             }
             
             .insight-title {
@@ -501,9 +485,9 @@ def get_theme_styles():
             
             .insight-text {
                 font-family: 'Inter', sans-serif;
-                font-size: .95rem;
+                font-size: 0.95rem;
                 line-height: 1.7;
-                color: #1a0f3d;
+                color: #5e35b1;
             }
             
             @keyframes slideIn {
@@ -618,32 +602,32 @@ def main():
     # Calculate KPIs
     kpis = calculate_kpis(filtered_df, df)
 
-    current_year = filtered_df['year'].max()
-    last_year = current_year - 1
-    # Sum total sales and profit for current and last year from full data
-    total_sales_current = df[df['year'] == current_year]['total_sales'].sum() / 1e6  # in millions
-    total_sales_last = df[df['year'] == last_year]['total_sales'].sum() / 1e6  # in millions
-    total_profit_current = df[df['year'] == current_year]['operating_profit'].sum() / 1e6
-    total_profit_last = df[df['year'] == last_year]['operating_profit'].sum() / 1e6
-    # Calculate growth percentages with safe zero-division check
-    sales_growth = ((total_sales_current - total_sales_last) / total_sales_last * 100) if total_sales_last > 0 else 0
-    profit_growth = ((total_profit_current - total_profit_last) / total_profit_last * 100) if total_profit_last > 0 else 0
-    # Format growth strings for KPI cards
-    sales_growth_text = f"▲ {sales_growth:.1f}% dibanding tahun lalu" if sales_growth >= 0 else f"▼ {abs(sales_growth):.1f}% dibanding tahun lalu"
-    profit_growth_text = f"▲ {profit_growth:.1f}% dibanding tahun lalu" if profit_growth >= 0 else f"▼ {abs(profit_growth):.1f}% dibanding tahun lalu"
+    # current_year = filtered_df['year'].max()
+    # last_year = current_year - 1
+    # # Sum total sales and profit for current and last year from full data
+    # total_sales_current = df[df['year'] == current_year]['total_sales'].sum() / 1e6  # in millions
+    # total_sales_last = df[df['year'] == last_year]['total_sales'].sum() / 1e6  # in millions
+    # total_profit_current = df[df['year'] == current_year]['operating_profit'].sum() / 1e6
+    # total_profit_last = df[df['year'] == last_year]['operating_profit'].sum() / 1e6
+    # # Calculate growth percentages with safe zero-division check
+    # sales_growth = ((total_sales_current - total_sales_last) / total_sales_last * 100) if total_sales_last > 0 else 0
+    # profit_growth = ((total_profit_current - total_profit_last) / total_profit_last * 100) if total_profit_last > 0 else 0
+    # # Format growth strings for KPI cards
+    # sales_growth_text = f"▲ {sales_growth:.1f}% dibanding tahun lalu" if sales_growth >= 0 else f"▼ {abs(sales_growth):.1f}% dibanding tahun lalu"
+    # profit_growth_text = f"▲ {profit_growth:.1f}% dibanding tahun lalu" if profit_growth >= 0 else f"▼ {abs(profit_growth):.1f}% dibanding tahun lalu"
 
-    # Hitung total unit terjual untuk tahun ini dan tahun lalu
-    total_units_current = df[df['year'] == current_year]['units_sold'].sum() / 1e6  # dalam juta
-    total_units_last = df[df['year'] == last_year]['units_sold'].sum() / 1e6  # dalam juta
-    # Hitung pertumbuhan unit terjual
-    units_growth = ((total_units_current - total_units_last) / total_units_last * 100) if total_units_last > 0 else 0
-    units_growth_text = f"▲ {units_growth:.1f}% dibanding tahun lalu" if units_growth >= 0 else f"▼ {abs(units_growth):.1f}% dibanding tahun lalu"
-    # Hitung harga rata-rata per unit untuk tahun ini dan tahun lalu
-    avg_price_current = df[df['year'] == current_year]['price_per_unit'].mean()
-    avg_price_last = df[df['year'] == last_year]['price_per_unit'].mean()
-    # Hitung pertumbuhan harga rata-rata per unit
-    price_growth = ((avg_price_current - avg_price_last) / avg_price_last * 100) if avg_price_last > 0 else 0
-    price_growth_text = f"▲ {price_growth:.1f}% dibanding tahun lalu" if price_growth >= 0 else f"▼ {abs(price_growth):.1f}% dibanding tahun lalu"
+    # # Hitung total unit terjual untuk tahun ini dan tahun lalu
+    # total_units_current = df[df['year'] == current_year]['units_sold'].sum() / 1e6  # dalam juta
+    # total_units_last = df[df['year'] == last_year]['units_sold'].sum() / 1e6  # dalam juta
+    # # Hitung pertumbuhan unit terjual
+    # units_growth = ((total_units_current - total_units_last) / total_units_last * 100) if total_units_last > 0 else 0
+    # units_growth_text = f"▲ {units_growth:.1f}% dibanding tahun lalu" if units_growth >= 0 else f"▼ {abs(units_growth):.1f}% dibanding tahun lalu"
+    # # Hitung harga rata-rata per unit untuk tahun ini dan tahun lalu
+    # avg_price_current = df[df['year'] == current_year]['price_per_unit'].mean()
+    # avg_price_last = df[df['year'] == last_year]['price_per_unit'].mean()
+    # # Hitung pertumbuhan harga rata-rata per unit
+    # price_growth = ((avg_price_current - avg_price_last) / avg_price_last * 100) if avg_price_last > 0 else 0
+    # price_growth_text = f"▲ {price_growth:.1f}% dibanding tahun lalu" if price_growth >= 0 else f"▼ {abs(price_growth):.1f}% dibanding tahun lalu"
     
     # Section 1: Ringkasan Metrik (Executive Summary)
     st.markdown("""
@@ -689,7 +673,7 @@ def main():
             "Total Sales",
             f"${kpis['total_sales']:,.1f}M",
             sales_pct,
-            sales_growth_text,
+            # sales_growth_text,
             sales_alert
         )
     with col2:
@@ -698,7 +682,7 @@ def main():
             "Total Profit",
             f"${kpis['total_profit']:,.1f}M",
             profit_pct,
-            profit_growth_text,
+            # profit_growth_text,
             profit_alert
         )
     
@@ -707,17 +691,14 @@ def main():
             "Units Sold",
             f"{kpis['total_units']:,.1f}M",
             units_pct,
-            units_growth_text
+            # units_growth_text
         )
     with col4:
         create_kpi_card(
-            "Harga Rata-rata per Unit",
-            f"$ {kpis['avg_price']:,.0f}",
-            price_growth_text  # Ganti dengan variabel pertumbuhan yang baru
             "Avg. Price per Unit",
             f"${kpis['avg_price']:,.0f}",
             price_pct,
-            price_growth_text 
+            # price_growth_text 
         )
     
     st.markdown('</div>', unsafe_allow_html=True)
@@ -735,7 +716,22 @@ def main():
         monthly_data = filtered_df.groupby('month').agg({'total_sales': 'sum', 'operating_profit': 'sum'}).reset_index()
         prediction_result, _, _ = generate_sales_prediction(monthly_data, algorithm='random_forest')
         plot_sales_profit_trend(monthly_data, prediction_result)
-    
+
+        if isinstance(prediction_result, dict):
+            prediction_alerts = generate_prediction_alert(prediction_result)
+            for alert in prediction_alerts:
+                if "📊" in alert:
+                    alert_class = "alert-success"  # Hijau untuk prediction value
+                elif "📈" in alert:
+                    if "UP" in alert or "NAIK" in alert:
+                        alert_class = "alert-success"  # Hijau untuk trend positif
+                    else:
+                        alert_class = "alert-warning"  # Orange untuk trend negatif
+                else:  # MAE
+                    alert_class = "alert-info"  # Biru untuk MAE/akurasi
+                
+                st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
+            
     with col2:
         plot_multi_period_trend(filtered_df)
     
@@ -781,12 +777,33 @@ def main():
     col1, col2, col3 = st.columns(3)
     with col1:
         plot_product_category_performance(filtered_df)
+
+        cat_perf = filtered_df.groupby('product_category').agg({'total_sales': 'sum'}).reset_index()
+        cat_perf['total_sales_usd'] = cat_perf['total_sales'] / 1e6
+
+        category_alerts = generate_category_alert(cat_perf)
+        for alert in category_alerts:
+            alert_class = "alert-success" if "🏅" in alert else "alert-warning"
+            st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
     
     with col2:
         plot_gender_distribution(filtered_df)
     
     with col3:
         plot_gender_preferences(filtered_df)
+
+        gender_pref = filtered_df.groupby(['gender_type', 'product_category']).agg({'total_sales': 'sum'}).reset_index()
+        gender_pref_pivot = gender_pref.pivot(index='gender_type', columns='product_category', values='total_sales').fillna(0)
+        gender_pref_pivot = gender_pref_pivot.div(1e6)  # Convert to millions
+        
+        # Get categories list
+        categories = gender_pref_pivot.columns.tolist()
+        gender_pref_reset = gender_pref_pivot.reset_index()
+        
+        if len(gender_pref_reset) > 0:
+            gender_alerts = generate_gender_preference_alert(gender_pref_reset, categories)
+            for alert in gender_alerts:
+                st.markdown(f'<div class="alert alert-success">{alert}</div>', unsafe_allow_html=True)
     
     col4, col5, col6 = st.columns(3)
     with col4:
@@ -794,9 +811,26 @@ def main():
     
     with col5:
         plot_units_per_category(filtered_df)
+        units_cat = filtered_df.groupby('product_category').agg({'units_sold': 'sum'}).reset_index()
+
+        units_alerts = generate_units_category_alert(units_cat)
+        for alert in units_alerts:
+            alert_class = "alert-success" if "🏆" in alert else "alert-warning"
+            st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
     
     with col6:
         plot_margin_per_category(filtered_df)
+
+        margin_cat = filtered_df.groupby('product_category').agg({
+            'total_sales': 'sum', 
+            'operating_profit': 'sum'
+        }).reset_index()
+        margin_cat['operating_margin'] = (margin_cat['operating_profit'] / margin_cat['total_sales']) * 100
+
+        margin_alerts = generate_margin_category_alert(margin_cat)
+        for alert in margin_alerts:
+            alert_class = "alert-success" if "💰" in alert else "alert-warning"
+            st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -819,6 +853,14 @@ def main():
     
     with col2:
         plot_sales_map(filtered_df)
+
+        city_sales = filtered_df.groupby('city').agg({'total_sales': 'sum'}).reset_index()
+        city_sales['total_sales_usd'] = city_sales['total_sales'] / 1e6
+
+        city_alerts = generate_city_alert(city_sales)
+        for alert in city_alerts:
+            alert_class = "alert-success" if "🌆" in alert else "alert-warning"
+            st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -833,6 +875,14 @@ def main():
     col1, col2 = st.columns(2)
     with col1:
         plot_sales_method_distribution(filtered_df)
+
+        sales_method = filtered_df.groupby('sales_method').agg({'total_sales': 'sum'}).reset_index()
+        sales_method['total_sales_usd'] = sales_method['total_sales'] / 1e6
+
+        method_alerts = generate_sales_method_alert(sales_method)
+        for alert in method_alerts:
+            alert_class = "alert-success" if "🎯" in alert else "alert-warning"
+            st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
     
     with col2:
         plot_sales_method_trend(filtered_df)
