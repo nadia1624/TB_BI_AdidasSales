@@ -620,45 +620,64 @@ def plot_units_per_category(filtered_df):
     st.markdown('</div>', unsafe_allow_html=True)
 
 def plot_margin_per_category(filtered_df):
-    st.markdown('<div class="chart-container"><div class="chart-title">Operating Margin by Category</div>', unsafe_allow_html=True)
+    st.markdown('<div class="chart-container"><div class="chart-title">Relationship Between Price and Volume</div>', unsafe_allow_html=True)
     
-    margin_cat = filtered_df.groupby('product_category').agg({'operating_margin': 'mean'}).reset_index()
+    # Prepare data for scatter plot
+    scatter_data = filtered_df.copy()
+    
+    # Get theme colors for dark/light mode
+    theme_colors = get_theme_colors()
     
     purple_palette = get_purple_palette()
-    # Create gradient colors based on margin values
-    colors = []
-    for i, margin in enumerate(margin_cat['operating_margin']):
-        intensity = (margin - margin_cat['operating_margin'].min()) / (margin_cat['operating_margin'].max() - margin_cat['operating_margin'].min())
-        colors.append(purple_palette[min(int(intensity * len(purple_palette)), len(purple_palette)-1)])
+    # Create gradient colors based on product category
+    categories = scatter_data['product_category'].unique()
+    category_colors = {}
+    for i, category in enumerate(categories):
+        color_idx = i % len(purple_palette)
+        category_colors[category] = purple_palette[color_idx]
     
     fig = go.Figure()
     
-    fig.add_trace(go.Bar(
-        x=margin_cat['product_category'],
-        y=margin_cat['operating_margin'],
-        marker=dict(color=colors),
-        hovertemplate='Category: %{x}<br>Operating Margin: %{y:.2f}%<extra></extra>'
-    ))
+    # Add scatter points for each category
+    for category in categories:
+        category_data = scatter_data[scatter_data['product_category'] == category]
+        
+        fig.add_trace(go.Scatter(
+            x=category_data['price_per_unit'],
+            y=category_data['units_sold'],
+            mode='markers',
+            name=category,
+            marker=dict(
+                color=category_colors[category],
+                size=8,
+                opacity=0.7,
+                line=dict(width=1, color=theme_colors['grid_color'])
+            ),
+            hovertemplate='<b>%{fullData.name}</b><br>' +
+                         'Price: $%{x:.2f}<br>' +
+                         'Volume: %{y:,.0f}<br>' +
+                         '<extra></extra>'
+        ))
     
     # Apply consistent styling
-    fig = apply_chart_layout(fig, 'Product Category', 'Operating Margin (%)', height=350, showlegend=False)
+    fig = apply_chart_layout(fig, 'Price per Unit ($)', 'Units Sold', height=350, showlegend=True)
     fig.update_layout(
-        height=400
+        height=400,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(color=theme_colors['text_color'])
+        )
     )
     
     st.plotly_chart(fig, use_container_width=True)
-    
-    # top_margin = margin_cat.nlargest(1, 'operating_margin').iloc[0]
-    # st.markdown(f"""
-    #     <div class="alert-success">
-    #         💰 Highest Margin: {top_margin['product_category']} 
-    #         ({top_margin['operating_margin']:.1f}%)
-    #     </div>
-    # """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 def plot_regional_sales(filtered_df):
-    st.markdown('<div class="chart-container"><div class="chart-title">Sales by Region</div>', unsafe_allow_html=True)
+    st.markdown('<div class="chart-container"><div class="chart-title">Sales Hierarchy Treemap</div>', unsafe_allow_html=True)
     
     regional_sales = filtered_df.groupby('region').agg({'total_sales': 'sum'}).reset_index()
     regional_sales['total_sales_usd'] = regional_sales['total_sales'] / 1e6 
@@ -672,19 +691,24 @@ def plot_regional_sales(filtered_df):
     
     fig = go.Figure()
     
-    fig.add_trace(go.Bar(
-        x=regional_sales['region'],
-        y=regional_sales['total_sales_usd'],
-        marker=dict(color=colors),
-        hovertemplate='Region: %{x}<br>Total Sales: $%{y:.2f}M<extra></extra>'
+    fig.add_trace(go.Treemap(
+        labels=regional_sales['region'],
+        values=regional_sales['total_sales_usd'],
+        parents=[""] * len(regional_sales),
+        textinfo="label+value",
+        texttemplate="<b>%{label}</b><br>$%{value:.2f}M",
+        hovertemplate='Region: %{label}<br>Total Sales: $%{value:.2f}M<extra></extra>',
+        marker=dict(
+            colors=colors,
+            line=dict(width=2, color='white')
+        ),
+        textfont=dict(size=12, color='white', family='Arial Black')
     ))
     
     # Apply consistent styling
-    fig = apply_chart_layout(fig, 'Region', 'Total Sales ($)', height=350, showlegend=False)
+    fig = apply_chart_layout(fig, '', '', height=350, showlegend=False)
     fig.update_layout(
-        yaxis_tickformat='.2f',
-        height=400,
-        yaxis_tickprefix='$ '
+        height=400
     )
     
     st.plotly_chart(fig, use_container_width=True)
@@ -830,19 +854,15 @@ def plot_sales_method_distribution(filtered_df):
         font=dict(family='Inter, sans-serif', size=14, color=theme['text_color']),
         margin=dict(l=40, r=40, t=60, b=40),
         showlegend=True,
-        legend=dict(x=0.5, xanchor='center', y=1.1, orientation='h')
+        legend=dict(x=0.5, xanchor='center', y=1.1, orientation='h', font=dict(color=theme['text_color'])) # Set legend text color
     )
+
+    # Update text color inside the pie chart
+    fig.update_traces(textfont_color=theme['text_color'])
     
     st.plotly_chart(fig, use_container_width=True)
-    
-    # dominant_method = sales_method.nlargest(1, 'total_sales_usd').iloc[0]
-    # st.markdown(f"""
-    #     <div class="alert-success">
-    #         🎯 Dominant Method: {dominant_method['sales_method']} 
-    #         (${dominant_method['total_sales_usd']:.1f}M)
-    #     </div>
-    # """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 def plot_sales_method_trend(filtered_df):

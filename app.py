@@ -47,6 +47,7 @@ def get_theme_styles():
                 box-shadow: 0 20px 40px rgba(124, 77, 255, 0.4);
                 position: relative;
                 overflow: hidden;
+                color: white;
             }
             
             .dashboard-header::before {
@@ -516,26 +517,28 @@ def main():
     # Apply theme styles
     st.markdown(get_theme_styles(), unsafe_allow_html=True)
     
-    # Main Dashboard Header with theme toggle
+    # Main Dashboard Header with integrated theme toggle
     st.markdown(f"""
     <div class="dashboard-header">
-        <div class="theme-toggle">
-        </div>
         <h1 class="dashboard-title">👟 Adidas Sales Analysis Dashboard</h1>
         <div class="dashboard-subtitle">Real-time insights and analytics for strategic decision making</div>
     </div>
     """, unsafe_allow_html=True)
     
-    # Theme toggle functionality
-    col1, col2, col3 = st.columns(3)
+    # Theme toggle button positioned in the header area
+    col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         if st.button(
             "🌙 Switch to Dark Mode" if not st.session_state.dark_mode else "☀️ Switch to Light Mode",
             key="theme_toggle",
-            help="Toggle between light and dark mode"
+            help="Toggle between light and dark mode",
+            use_container_width=True
         ):
             st.session_state.dark_mode = not st.session_state.dark_mode
             st.rerun()
+    
+    # Add some spacing after the theme toggle
+    st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
     
     # Sidebar Configuration
     with st.sidebar:
@@ -766,14 +769,14 @@ def main():
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # Section 4: Analisis Produk & Gender (Product & Customer Insights)
+# Section 4: Analisis Produk & Gender (Product & Customer Insights)
     st.markdown("""
     <div class="section-container">
         <div class="section-title">
             👥 Product & Gender Analysis
         </div>
     """, unsafe_allow_html=True)
-    
+
     col1, col2, col3 = st.columns(3)
     with col1:
         plot_product_category_performance(filtered_df)
@@ -785,10 +788,10 @@ def main():
         for alert in category_alerts:
             alert_class = "alert-success" if "🏅" in alert else "alert-warning"
             st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
-    
+
     with col2:
         plot_gender_distribution(filtered_df)
-    
+
     with col3:
         plot_gender_preferences(filtered_df)
 
@@ -804,11 +807,12 @@ def main():
             gender_alerts = generate_gender_preference_alert(gender_pref_reset, categories)
             for alert in gender_alerts:
                 st.markdown(f'<div class="alert alert-success">{alert}</div>', unsafe_allow_html=True)
-    
-    col4, col5, col6 = st.columns(3)
+
+    # Second row with only 2 columns instead of 3
+    col4, col5 = st.columns(2)
     with col4:
         plot_gender_trend(filtered_df)
-    
+
     with col5:
         plot_units_per_category(filtered_df)
         units_cat = filtered_df.groupby('product_category').agg({'units_sold': 'sum'}).reset_index()
@@ -817,21 +821,11 @@ def main():
         for alert in units_alerts:
             alert_class = "alert-success" if "🏆" in alert else "alert-warning"
             st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
-    
-    with col6:
-        plot_margin_per_category(filtered_df)
 
-        margin_cat = filtered_df.groupby('product_category').agg({
-            'total_sales': 'sum', 
-            'operating_profit': 'sum'
-        }).reset_index()
-        margin_cat['operating_margin'] = (margin_cat['operating_profit'] / margin_cat['total_sales']) * 100
+    # Third row - Full width for Price vs Volume relationship
+    st.markdown('<div style="margin-top: 20px;"></div>', unsafe_allow_html=True)
+    plot_margin_per_category(filtered_df)
 
-        margin_alerts = generate_margin_category_alert(margin_cat)
-        for alert in margin_alerts:
-            alert_class = "alert-success" if "💰" in alert else "alert-warning"
-            st.markdown(f'<div class="alert {alert_class}">{alert}</div>', unsafe_allow_html=True)
-    
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Section 5: Analisis Geografis (Geographic Market Analysis)
